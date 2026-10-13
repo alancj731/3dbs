@@ -1,0 +1,264 @@
+<header class="topbar">
+  <div class="brand">
+    <img class="logo" src="favicon.svg" alt="" width="32" height="32" />
+    <div>
+      <h1>SQL Practice</h1>
+      <p>Practise SQL queries on MySQL, SQL Server &amp; PostgreSQL · {{ exercises().length }} exercises</p>
+      <p class="stack">Built with C# · ASP.NET Core · Angular</p>
+    </div>
+  </div>
+
+  <div class="db-switch" role="radiogroup" aria-label="Database">
+    @for (d of databases; track d.key) {
+      <button type="button" role="radio" [attr.aria-checked]="db() === d.key" [class.active]="db() === d.key" (click)="db.set(d.key)">
+        {{ d.label }}
+        <span class="count">{{ progress.solved()[d.key].length }}/{{ exercises().length }}</span>
+      </button>
+    }
+  </div>
+
+  <div class="top-links">
+    <button type="button" class="ghost small" (click)="aboutDialog().nativeElement.showModal()">About</button>
+    <a class="github" [href]="repoUrl" target="_blank" rel="noopener" title="Source code on GitHub" aria-label="Source code on GitHub">
+      <svg viewBox="0 0 16 16" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+      <span>GitHub</span>
+    </a>
+  </div>
+</header>
+
+<dialog #about class="about" aria-labelledby="about-title" (click)="$event.target === aboutDialog().nativeElement && aboutDialog().nativeElement.close()">
+  <div class="about-body">
+    <div class="about-head">
+      <h2 id="about-title">About this project</h2>
+      <button type="button" class="ghost small" (click)="aboutDialog().nativeElement.close()" aria-label="Close">✕</button>
+    </div>
+    <p>A full-stack SQL practice app: your query runs on a real database and is graded by comparing its result
+      with a reference answer, on SQL Server, MySQL and PostgreSQL loaded with the same data.</p>
+
+    <h3>Built with</h3>
+    <dl>
+      <dt>Backend</dt>
+      <dd>C# / .NET 10 · ASP.NET Core minimal API · ADO.NET (SqlClient, MySqlConnector, Npgsql) · rate limiting · xUnit</dd>
+      <dt>Frontend</dt>
+      <dd>Angular (standalone components, signals) · CodeMirror 6 · TypeScript</dd>
+      <dt>Data &amp; hosting</dt>
+      <dd>SQL Server 2022 · MySQL 8.4 · PostgreSQL 17 · Docker Compose · Caddy (HTTPS) · Vercel · GitHub Actions</dd>
+    </dl>
+
+    <h3>Architecture</h3>
+    <pre class="arch">Browser ─► Angular app ─/api─► ASP.NET Core API ─► SQL Server
+           (Vercel)              (Docker VM,       ├─► MySQL
+                                  behind Caddy)    └─► PostgreSQL</pre>
+    <ul>
+      <li><strong>SqlGuard</strong> tokenizes your SQL per dialect and allows only SELECT/WITH/INSERT/UPDATE/DELETE.</li>
+      <li><strong>Runner</strong> executes it as a restricted login inside a transaction that is always rolled back.</li>
+      <li><strong>Checker</strong> grades by result, not text: it runs the reference answer and diffs the rows.</li>
+    </ul>
+    <p><a [href]="repoUrl" target="_blank" rel="noopener">Source code, tests and docs on GitHub →</a></p>
+  </div>
+</dialog>
+
+<div class="layout">
+  <!-- Exercise list -->
+  <nav class="sidebar" aria-label="Exercises">
+    <input class="search" type="search" placeholder="Filter exercises…" [value]="filter()" (input)="filter.set($any($event.target).value)" />
+    <button type="button" class="nav-item free" [class.active]="currentId() === null" (click)="select(null)">
+      <span class="status">✎</span> Free SQL (scratchpad)
+    </button>
+    @for (g of groups(); track g.category) {
+      <h2>{{ g.category }}</h2>
+      @for (e of g.items; track e.id) {
+        <button type="button" class="nav-item" [class.active]="currentId() === e.id" (click)="select(e.id)">
+          <span class="status" [class]="'status ' + (status(e) ?? '')" [attr.title]="status(e) === 'revealed' ? 'Answer revealed' : status(e) === 'solved' ? 'Solved' : null">
+            {{ status(e) === 'solved' ? '✓' : status(e) === 'revealed' ? '◐' : e.id }}
+          </span>
+          <span class="nav-title">{{ e.title }}</span>
+          <span class="dot {{ e.difficulty }}" [attr.title]="e.difficulty"></span>
+        </button>
+      }
+    } @empty {
+      @if (exercises().length) { <p class="muted pad">No exercises match.</p> }
+    }
+    <button type="button" class="link reset" (click)="resetProgress()">Reset progress</button>
+  </nav>
+
+  <!-- Main -->
+  <main class="main">
+    @if (loadError()) {
+      <div class="banner bad">{{ loadError() }}</div>
+    }
+
+    <section class="exercise">
+      @if (current(); as e) {
+        <div class="exercise-head">
+          <div class="badges">
+            <span class="badge">#{{ e.id }} · {{ e.category }}</span>
+            <span class="badge {{ e.difficulty }}">{{ e.difficulty }}</span>
+            @if (e.kind === 'write') { <span class="badge write" title="Your statement runs in a transaction that is always rolled back">modifies data · auto-rollback</span> }
+            @if (e.ordered) { <span class="badge" title="The row order is checked">order matters</span> }
+          </div>
+          <div class="stepper">
+            <button type="button" class="ghost" (click)="step(-1)" [disabled]="index() <= 0" aria-label="Previous exercise">‹ Prev</button>
+            <button type="button" class="ghost" (click)="step(1)" [disabled]="index() >= exercises().length - 1" aria-label="Next exercise">Next ›</button>
+          </div>
+        </div>
+        <h2 class="exercise-title">
+          {{ e.title }}
+          @if (status(e) === 'solved') { <span class="solved-mark">✓ solved on {{ dbLabel() }}</span> }
+        </h2>
+        <p class="prompt">{{ e.prompt }}</p>
+        @if (e.hint) {
+          @if (showHint()) { <p class="hint"><strong>Hint:</strong> {{ e.hint }}</p> }
+          @else { <button type="button" class="link" (click)="showHint.set(true)">Show hint</button> }
+        }
+      } @else if (currentId() === null) {
+        <h2 class="exercise-title">Free SQL</h2>
+        <p class="prompt">Run any query against {{ dbLabel() }}. INSERT/UPDATE/DELETE are rolled back after each run, so feel free to experiment.</p>
+      }
+    </section>
+
+    <section class="editor-card">
+      <div class="editor-bar">
+        <span class="muted">{{ dbLabel() }} dialect</span>
+        <div class="editor-tools">
+          @if (clipboardMessage(); as m) { <span class="clip-msg" role="status">{{ m }}</span> }
+          <button type="button" class="ghost small" (click)="copyQuery()" title="Copy the selection, or the whole query if nothing is selected">⧉ Copy</button>
+          <button type="button" class="ghost small" (click)="pasteQuery()" title="Paste at the cursor">📋 Paste</button>
+          <button type="button" class="ghost small" (click)="showSchema.set(!showSchema())" [attr.aria-expanded]="showSchema()">
+            {{ showSchema() ? 'Hide' : 'Show' }} tables
+          </button>
+        </div>
+      </div>
+      <app-sql-editor [(value)]="sql" [dialect]="db()" [tables]="schema()" (run)="run()" (check)="check()" />
+      <div class="actions">
+        <button type="button" class="secondary" (click)="run()" [disabled]="busy() !== null">
+          {{ busy() === 'run' ? 'Running…' : '▶ Run' }} <kbd>Ctrl+↵</kbd>
+        </button>
+        @if (current()) {
+          <button type="button" class="primary" (click)="check()" [disabled]="busy() !== null">
+            {{ busy() === 'check' ? 'Checking…' : '✓ Check answer' }} <kbd>Ctrl+⇧+↵</kbd>
+          </button>
+          <span class="spacer"></span>
+          @if (!answer()) {
+            @if (confirmReveal()) {
+              <span class="confirm">Reveal the answer?
+                <button type="button" class="danger small" (click)="reveal()">Yes, show it</button>
+                <button type="button" class="ghost small" (click)="confirmReveal.set(false)">Cancel</button>
+              </span>
+            } @else {
+              <button type="button" class="ghost" (click)="confirmReveal.set(true)">Show answer</button>
+            }
+          }
+        }
+      </div>
+      @if (slow()) {
+        <p class="slow-hint" role="status">Still working… the first query after a quiet spell can take a few seconds while the databases warm up.</p>
+      }
+    </section>
+
+    @if (answer(); as a) {
+      <section class="answer">
+        <div class="answer-head">
+          <h3>Answer for {{ dbLabel() }}</h3>
+          <button type="button" class="ghost small" (click)="copyAnswer()">Copy to editor</button>
+        </div>
+        <pre><code>{{ a.sql }}</code></pre>
+        @if (a.check) {
+          <p class="muted small-text">Graded by running this query after your statement (inside the same rolled-back transaction):</p>
+          <pre class="check-sql"><code>{{ a.check }}</code></pre>
+        }
+      </section>
+    }
+
+    <!-- Results -->
+    <section class="results" aria-live="polite">
+      @if (requestError()) {
+        <div class="banner bad">{{ requestError() }}</div>
+      }
+
+      @if (runOutcome(); as r) {
+        @if (r.error) {
+          <div class="banner bad"><strong>Error</strong><pre>{{ r.error }}</pre></div>
+        } @else if (r.result; as q) {
+          <div class="meta">
+            @if (q.columns.length) {
+              {{ q.rows.length }}{{ q.truncated ? '+' : '' }} row(s)
+            } @else {
+              {{ q.rowsAffected }} row(s) affected <span class="muted">(rolled back)</span>
+            }
+            · {{ q.elapsedMs }} ms
+            @if (q.truncated) { <span class="muted">· showing first {{ q.rows.length }}</span> }
+          </div>
+          <app-result-grid [columns]="q.columns" [rows]="q.rows" />
+        }
+      }
+
+      @if (checkResult(); as c) {
+        <div class="banner" [class.good]="c.correct" [class.bad]="!c.correct">
+          <strong>{{ c.correct ? '✓ Correct!' : '✗ Not quite' }}</strong>
+          @if (!c.correct) { {{ c.message }} }
+          @if (c.correct && current()?.kind === 'write') { <span>The data ended up exactly as expected. (Changes were rolled back.)</span> }
+          @if (c.error) { <pre>{{ c.error }}</pre> }
+        </div>
+
+        @if (!c.correct && (c.missing.length || c.extra.length)) {
+          <div class="diff">
+            @if (c.missing.length) {
+              <div>
+                <h4>Missing rows <span class="muted">(expected, but not in yours)</span></h4>
+                <app-result-grid [columns]="c.expected?.columns ?? []" [rows]="c.missing" />
+              </div>
+            }
+            @if (c.extra.length) {
+              <div>
+                <h4>Unexpected rows <span class="muted">(in yours, but not expected)</span></h4>
+                <app-result-grid [columns]="c.yours?.columns ?? []" [rows]="c.extra" />
+              </div>
+            }
+          </div>
+        }
+
+        @if (c.yours || c.expected) {
+          <div class="compare">
+            @if (c.yours; as y) {
+              <div>
+                <h4>{{ current()?.kind === 'write' ? 'Data after your statement' : 'Your result' }} <span class="muted">· {{ y.rows.length }} row(s)</span></h4>
+                <app-result-grid [columns]="y.columns" [rows]="y.rows" />
+              </div>
+            }
+            @if (!c.correct && c.expected; as x) {
+              <div>
+                <h4>{{ current()?.kind === 'write' ? 'Expected data' : 'Expected result' }} <span class="muted">· {{ x.rows.length }} row(s)</span></h4>
+                <app-result-grid [columns]="x.columns" [rows]="x.rows" />
+              </div>
+            }
+          </div>
+        }
+      }
+    </section>
+  </main>
+
+  <!-- Schema browser -->
+  @if (showSchema()) {
+    <aside class="schema" aria-label="Tables">
+      <h2>Tables <span class="muted">· click a name to insert it</span></h2>
+      @for (t of schema(); track t.name) {
+        <div class="table">
+          <div class="table-row">
+            <button type="button" class="toggle" (click)="toggleTable(t.name)" [attr.aria-expanded]="openTables().has(t.name)">{{ openTables().has(t.name) ? '▾' : '▸' }}</button>
+            <button type="button" class="link mono" (click)="insertTable(t.name)">{{ t.name }}</button>
+          </div>
+          @if (openTables().has(t.name)) {
+            <ul>
+              @for (c of t.columns; track c.name) {
+                <li><button type="button" class="link mono" (click)="editor().insert(c.name)">{{ c.name }}</button> <span class="muted">{{ c.type }}{{ c.nullable ? '' : ' · not null' }}</span></li>
+              }
+            </ul>
+          }
+        </div>
+      } @empty {
+        <p class="muted">Schema unavailable.</p>
+      }
+    </aside>
+  }
+</div>

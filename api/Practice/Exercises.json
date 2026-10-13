@@ -1,0 +1,1030 @@
+[
+  {
+    "id": 1,
+    "category": "Basic SELECT",
+    "difficulty": "easy",
+    "title": "Everything from a table",
+    "prompt": "Return every column and every row of the ProductCategory table.",
+    "hint": "SELECT * returns all columns. Tables live in the SalesLT schema (database SalesLT on MySQL).",
+    "ordered": false,
+    "answer": {
+      "default": "SELECT * FROM SalesLT.ProductCategory;"
+    },
+    "check": null
+  },
+  {
+    "id": 2,
+    "category": "Basic SELECT",
+    "difficulty": "easy",
+    "title": "Pick columns",
+    "prompt": "List the ProductID, Name, ProductNumber and ListPrice of every product.",
+    "hint": null,
+    "ordered": false,
+    "answer": {
+      "default": "SELECT ProductID, Name, ProductNumber, ListPrice\nFROM SalesLT.Product;"
+    },
+    "check": null
+  },
+  {
+    "id": 3,
+    "category": "Basic SELECT",
+    "difficulty": "easy",
+    "title": "Computed column",
+    "prompt": "List each product's Name, ListPrice, StandardCost and the margin (ListPrice minus StandardCost) as a column named Margin.",
+    "hint": "Use an expression in the SELECT list and give it an alias with AS.",
+    "ordered": false,
+    "answer": {
+      "default": "SELECT Name, ListPrice, StandardCost, ListPrice - StandardCost AS Margin\nFROM SalesLT.Product;"
+    },
+    "check": null
+  },
+  {
+    "id": 4,
+    "category": "Basic SELECT",
+    "difficulty": "easy",
+    "title": "DISTINCT values",
+    "prompt": "List each distinct Color used by products, once each (NULL counts as one value).",
+    "hint": null,
+    "ordered": false,
+    "answer": {
+      "default": "SELECT DISTINCT Color\nFROM SalesLT.Product;"
+    },
+    "check": null
+  },
+  {
+    "id": 5,
+    "category": "Basic SELECT",
+    "difficulty": "easy",
+    "title": "Concatenate strings",
+    "prompt": "Return CustomerID and the customer's full name as 'FirstName LastName' (one space between) in a column named FullName.",
+    "hint": "CONCAT() works on all three. SQL Server also has +, Postgres has ||.",
+    "ordered": false,
+    "answer": {
+      "default": "SELECT CustomerID, CONCAT(FirstName, ' ', LastName) AS FullName\nFROM SalesLT.Customer;",
+      "sqlserver": "SELECT CustomerID, FirstName + ' ' + LastName AS FullName\nFROM SalesLT.Customer;",
+      "postgres": "SELECT CustomerID, FirstName || ' ' || LastName AS FullName\nFROM SalesLT.Customer;"
+    },
+    "check": null
+  },
+  {
+    "id": 6,
+    "category": "Filtering (WHERE)",
+    "difficulty": "easy",
+    "title": "Equality filter",
+    "prompt": "Return ProductID, Name and ListPrice of all products whose Color is 'Red'.",
+    "hint": null,
+    "ordered": false,
+    "answer": {
+      "default": "SELECT ProductID, Name, ListPrice\nFROM SalesLT.Product\nWHERE Color = 'Red';"
+    },
+    "check": null
+  },
+  {
+    "id": 7,
+    "category": "Filtering (WHERE)",
+    "difficulty": "easy",
+    "title": "AND conditions",
+    "prompt": "Return ProductID, Name and ListPrice of black products with a ListPrice greater than 1000.",
+    "hint": null,
+    "ordered": false,
+    "answer": {
+      "default": "SELECT ProductID, Name, ListPrice\nFROM SalesLT.Product\nWHERE Color = 'Black' AND ListPrice > 1000;"
+    },
+    "check": null
+  },
+  {
+    "id": 8,
+    "category": "Filtering (WHERE)",
+    "difficulty": "easy",
+    "title": "IN list",
+    "prompt": "Return AddressID, City and StateProvince of addresses in California, Oregon or Washington.",
+    "hint": null,
+    "ordered": false,
+    "answer": {
+      "default": "SELECT AddressID, City, StateProvince\nFROM SalesLT.Address\nWHERE StateProvince IN ('California', 'Oregon', 'Washington');"
+    },
+    "check": null
+  },
+  {
+    "id": 9,
+    "category": "Filtering (WHERE)",
+    "difficulty": "easy",
+    "title": "BETWEEN",
+    "prompt": "Return ProductID, Name and ListPrice of products priced from 100 to 500 inclusive.",
+    "hint": "BETWEEN includes both ends.",
+    "ordered": false,
+    "answer": {
+      "default": "SELECT ProductID, Name, ListPrice\nFROM SalesLT.Product\nWHERE ListPrice BETWEEN 100 AND 500;"
+    },
+    "check": null
+  },
+  {
+    "id": 10,
+    "category": "Filtering (WHERE)",
+    "difficulty": "easy",
+    "title": "IS NULL",
+    "prompt": "Return ProductID and Name of products that have no Color.",
+    "hint": "Color = NULL is never true. Use IS NULL.",
+    "ordered": false,
+    "answer": {
+      "default": "SELECT ProductID, Name\nFROM SalesLT.Product\nWHERE Color IS NULL;"
+    },
+    "check": null
+  },
+  {
+    "id": 11,
+    "category": "Filtering (WHERE)",
+    "difficulty": "easy",
+    "title": "IS NOT NULL",
+    "prompt": "Return CustomerID, FirstName, LastName and Suffix of customers that have a Suffix.",
+    "hint": null,
+    "ordered": false,
+    "answer": {
+      "default": "SELECT CustomerID, FirstName, LastName, Suffix\nFROM SalesLT.Customer\nWHERE Suffix IS NOT NULL;"
+    },
+    "check": null
+  },
+  {
+    "id": 12,
+    "category": "Filtering (WHERE)",
+    "difficulty": "easy",
+    "title": "LIKE: starts with",
+    "prompt": "Return ProductID and Name of products whose Name starts with 'Mountain'.",
+    "hint": null,
+    "ordered": false,
+    "answer": {
+      "default": "SELECT ProductID, Name\nFROM SalesLT.Product\nWHERE Name LIKE 'Mountain%';"
+    },
+    "check": null
+  },
+  {
+    "id": 13,
+    "category": "Filtering (WHERE)",
+    "difficulty": "medium",
+    "title": "Case-insensitive search",
+    "prompt": "Return CustomerID and CompanyName of customers whose CompanyName contains 'bike' in any letter case (Bike, BIKE, bike...).",
+    "hint": "SQL Server and MySQL collations here are case-insensitive, so LIKE is enough. Postgres LIKE is case-sensitive: use ILIKE or LOWER().",
+    "ordered": false,
+    "answer": {
+      "default": "SELECT CustomerID, CompanyName\nFROM SalesLT.Customer\nWHERE CompanyName LIKE '%bike%';",
+      "postgres": "SELECT CustomerID, CompanyName\nFROM SalesLT.Customer\nWHERE CompanyName ILIKE '%bike%';"
+    },
+    "check": null
+  },
+  {
+    "id": 14,
+    "category": "Filtering (WHERE)",
+    "difficulty": "medium",
+    "title": "LIKE with _ wildcard",
+    "prompt": "Return ProductID, Name and ProductNumber of products whose ProductNumber has 'R' as its 4th character.",
+    "hint": "_ matches exactly one character, % matches any number.",
+    "ordered": false,
+    "answer": {
+      "default": "SELECT ProductID, Name, ProductNumber\nFROM SalesLT.Product\nWHERE ProductNumber LIKE '___R%';"
+    },
+    "check": null
+  },
+  {
+    "id": 15,
+    "category": "Sorting & paging",
+    "difficulty": "easy",
+    "title": "Top 10 most expensive",
+    "prompt": "Return Name and ListPrice of the 10 most expensive products, highest price first. Break ties by Name ascending.",
+    "hint": "SQL Server: SELECT TOP n. MySQL and Postgres: LIMIT n at the end.",
+    "ordered": true,
+    "answer": {
+      "sqlserver": "SELECT TOP 10 Name, ListPrice\nFROM SalesLT.Product\nORDER BY ListPrice DESC, Name;",
+      "default": "SELECT Name, ListPrice\nFROM SalesLT.Product\nORDER BY ListPrice DESC, Name\nLIMIT 10;"
+    },
+    "check": null
+  },
+  {
+    "id": 16,
+    "category": "Sorting & paging",
+    "difficulty": "medium",
+    "title": "Sort by several columns",
+    "prompt": "Return ProductID, Name, Color and ListPrice of all products sorted by Color ascending, then ListPrice descending, then ProductID ascending.",
+    "hint": "Where NULLs sort differs by database: first on SQL Server and MySQL, last on Postgres.",
+    "ordered": true,
+    "answer": {
+      "default": "SELECT ProductID, Name, Color, ListPrice\nFROM SalesLT.Product\nORDER BY Color, ListPrice DESC, ProductID;"
+    },
+    "check": null
+  },
+  {
+    "id": 17,
+    "category": "Sorting & paging",
+    "difficulty": "medium",
+    "title": "Paging with OFFSET",
+    "prompt": "Customers sorted by CustomerID, 10 per page. Return page 3 (rows 21 to 30): CustomerID and CompanyName.",
+    "hint": "SQL Server: OFFSET n ROWS FETCH NEXT m ROWS ONLY (needs ORDER BY). Others: LIMIT m OFFSET n.",
+    "ordered": true,
+    "answer": {
+      "sqlserver": "SELECT CustomerID, CompanyName\nFROM SalesLT.Customer\nORDER BY CustomerID\nOFFSET 20 ROWS FETCH NEXT 10 ROWS ONLY;",
+      "default": "SELECT CustomerID, CompanyName\nFROM SalesLT.Customer\nORDER BY CustomerID\nLIMIT 10 OFFSET 20;"
+    },
+    "check": null
+  },
+  {
+    "id": 18,
+    "category": "Sorting & paging",
+    "difficulty": "easy",
+    "title": "Cheapest colored products",
+    "prompt": "Return ProductID, Name, Color and ListPrice of the 5 cheapest products that have a Color. Order by ListPrice ascending, then ProductID.",
+    "hint": null,
+    "ordered": true,
+    "answer": {
+      "sqlserver": "SELECT TOP 5 ProductID, Name, Color, ListPrice\nFROM SalesLT.Product\nWHERE Color IS NOT NULL\nORDER BY ListPrice, ProductID;",
+      "default": "SELECT ProductID, Name, Color, ListPrice\nFROM SalesLT.Product\nWHERE Color IS NOT NULL\nORDER BY ListPrice, ProductID\nLIMIT 5;"
+    },
+    "check": null
+  },
+  {
+    "id": 19,
+    "category": "Aggregates & GROUP BY",
+    "difficulty": "easy",
+    "title": "COUNT rows",
+    "prompt": "How many customers are there? Return a single number.",
+    "hint": null,
+    "ordered": false,
+    "answer": {
+      "default": "SELECT COUNT(*) AS CustomerCount\nFROM SalesLT.Customer;"
+    },
+    "check": null
+  },
+  {
+    "id": 20,
+    "category": "Aggregates & GROUP BY",
+    "difficulty": "easy",
+    "title": "MIN / MAX / AVG",
+    "prompt": "Return the lowest, highest and average ListPrice of all products (three columns, in that order).",
+    "hint": null,
+    "ordered": false,
+    "answer": {
+      "default": "SELECT MIN(ListPrice) AS MinPrice, MAX(ListPrice) AS MaxPrice, AVG(ListPrice) AS AvgPrice\nFROM SalesLT.Product;"
+    },
+    "check": null
+  },
+  {
+    "id": 21,
+    "category": "Aggregates & GROUP BY",
+    "difficulty": "easy",
+    "title": "GROUP BY",
+    "prompt": "Return each Color (including NULL) and how many products have it.",
+    "hint": null,
+    "ordered": false,
+    "answer": {
+      "default": "SELECT Color, COUNT(*) AS ProductCount\nFROM SalesLT.Product\nGROUP BY Color;"
+    },
+    "check": null
+  },
+  {
+    "id": 22,
+    "category": "Aggregates & GROUP BY",
+    "difficulty": "easy",
+    "title": "SUM per group",
+    "prompt": "From SalesOrderDetail, return each ProductID and the total quantity sold (sum of OrderQty).",
+    "hint": null,
+    "ordered": false,
+    "answer": {
+      "default": "SELECT ProductID, SUM(OrderQty) AS TotalQty\nFROM SalesLT.SalesOrderDetail\nGROUP BY ProductID;"
+    },
+    "check": null
+  },
+  {
+    "id": 23,
+    "category": "Aggregates & GROUP BY",
+    "difficulty": "medium",
+    "title": "HAVING",
+    "prompt": "Return Color and product count for colors that have more than 30 products.",
+    "hint": "WHERE filters rows before grouping. HAVING filters groups after.",
+    "ordered": false,
+    "answer": {
+      "default": "SELECT Color, COUNT(*) AS ProductCount\nFROM SalesLT.Product\nGROUP BY Color\nHAVING COUNT(*) > 30;"
+    },
+    "check": null
+  },
+  {
+    "id": 24,
+    "category": "Aggregates & GROUP BY",
+    "difficulty": "easy",
+    "title": "COUNT DISTINCT",
+    "prompt": "How many different cities appear in the Address table? Return a single number.",
+    "hint": null,
+    "ordered": false,
+    "answer": {
+      "default": "SELECT COUNT(DISTINCT City) AS Cities\nFROM SalesLT.Address;"
+    },
+    "check": null
+  },
+  {
+    "id": 25,
+    "category": "Aggregates & GROUP BY",
+    "difficulty": "medium",
+    "title": "Group by two columns",
+    "prompt": "Return CountryRegion, StateProvince and the number of addresses in each, sorted by CountryRegion then StateProvince.",
+    "hint": null,
+    "ordered": true,
+    "answer": {
+      "default": "SELECT CountryRegion, StateProvince, COUNT(*) AS Addresses\nFROM SalesLT.Address\nGROUP BY CountryRegion, StateProvince\nORDER BY CountryRegion, StateProvince;"
+    },
+    "check": null
+  },
+  {
+    "id": 26,
+    "category": "Joins",
+    "difficulty": "easy",
+    "title": "INNER JOIN",
+    "prompt": "Return each product's Name and the Name of its category (two columns: product name, category name).",
+    "hint": null,
+    "ordered": false,
+    "answer": {
+      "default": "SELECT p.Name AS Product, c.Name AS Category\nFROM SalesLT.Product p\nJOIN SalesLT.ProductCategory c ON c.ProductCategoryID = p.ProductCategoryID;"
+    },
+    "check": null
+  },
+  {
+    "id": 27,
+    "category": "Joins",
+    "difficulty": "medium",
+    "title": "Order lines with products",
+    "prompt": "For order 71774, return each line's product Name, OrderQty and UnitPrice.",
+    "hint": null,
+    "ordered": false,
+    "answer": {
+      "default": "SELECT p.Name, d.OrderQty, d.UnitPrice\nFROM SalesLT.SalesOrderDetail d\nJOIN SalesLT.Product p ON p.ProductID = d.ProductID\nWHERE d.SalesOrderID = 71774;"
+    },
+    "check": null
+  },
+  {
+    "id": 28,
+    "category": "Joins",
+    "difficulty": "medium",
+    "title": "JOIN + GROUP BY",
+    "prompt": "For every order return SalesOrderID, the customer's CompanyName, the number of order lines and the order's TotalDue.",
+    "hint": null,
+    "ordered": false,
+    "answer": {
+      "default": "SELECT h.SalesOrderID, c.CompanyName, COUNT(*) AS LineCount, h.TotalDue\nFROM SalesLT.SalesOrderHeader h\nJOIN SalesLT.Customer c ON c.CustomerID = h.CustomerID\nJOIN SalesLT.SalesOrderDetail d ON d.SalesOrderID = h.SalesOrderID\nGROUP BY h.SalesOrderID, c.CompanyName, h.TotalDue;"
+    },
+    "check": null
+  },
+  {
+    "id": 29,
+    "category": "Joins",
+    "difficulty": "medium",
+    "title": "LEFT JOIN: find missing rows",
+    "prompt": "Return CustomerID, FirstName and LastName of customers who have never placed an order.",
+    "hint": "LEFT JOIN keeps every customer. Customers without orders get NULLs in the order columns.",
+    "ordered": false,
+    "answer": {
+      "default": "SELECT c.CustomerID, c.FirstName, c.LastName\nFROM SalesLT.Customer c\nLEFT JOIN SalesLT.SalesOrderHeader h ON h.CustomerID = c.CustomerID\nWHERE h.SalesOrderID IS NULL;"
+    },
+    "check": null
+  },
+  {
+    "id": 30,
+    "category": "Joins",
+    "difficulty": "medium",
+    "title": "Self join",
+    "prompt": "Categories form a two-level tree (ParentProductCategoryID points to the same table). For every subcategory return its Name and its parent category's Name.",
+    "hint": "Join ProductCategory to itself, using two different aliases.",
+    "ordered": false,
+    "answer": {
+      "default": "SELECT c.Name AS Category, parent.Name AS ParentCategory\nFROM SalesLT.ProductCategory c\nJOIN SalesLT.ProductCategory parent ON parent.ProductCategoryID = c.ParentProductCategoryID;"
+    },
+    "check": null
+  },
+  {
+    "id": 31,
+    "category": "Joins",
+    "difficulty": "medium",
+    "title": "Many-to-many join",
+    "prompt": "Customers and addresses are linked through CustomerAddress. Return CompanyName, City and StateProvince for every customer's 'Main Office' address.",
+    "hint": null,
+    "ordered": false,
+    "answer": {
+      "default": "SELECT c.CompanyName, a.City, a.StateProvince\nFROM SalesLT.Customer c\nJOIN SalesLT.CustomerAddress ca ON ca.CustomerID = c.CustomerID\nJOIN SalesLT.Address a ON a.AddressID = ca.AddressID\nWHERE ca.AddressType = 'Main Office';"
+    },
+    "check": null
+  },
+  {
+    "id": 32,
+    "category": "Joins",
+    "difficulty": "hard",
+    "title": "Revenue per top-level category",
+    "prompt": "Return each top-level category Name (Bikes, Clothing, ...) and its total revenue (sum of SalesOrderDetail.LineTotal), highest revenue first.",
+    "hint": "Products belong to subcategories. Go up one more level with a self join.",
+    "ordered": true,
+    "answer": {
+      "default": "SELECT parent.Name AS Category, SUM(d.LineTotal) AS Revenue\nFROM SalesLT.SalesOrderDetail d\nJOIN SalesLT.Product p ON p.ProductID = d.ProductID\nJOIN SalesLT.ProductCategory c ON c.ProductCategoryID = p.ProductCategoryID\nJOIN SalesLT.ProductCategory parent ON parent.ProductCategoryID = c.ParentProductCategoryID\nGROUP BY parent.Name\nORDER BY Revenue DESC;"
+    },
+    "check": null
+  },
+  {
+    "id": 33,
+    "category": "Joins",
+    "difficulty": "medium",
+    "title": "LEFT JOIN + COUNT",
+    "prompt": "Return every category's Name and its number of products, including categories with 0 products.",
+    "hint": "COUNT(*) counts the NULL row too. COUNT(column) skips NULLs.",
+    "ordered": false,
+    "answer": {
+      "default": "SELECT c.Name, COUNT(p.ProductID) AS Products\nFROM SalesLT.ProductCategory c\nLEFT JOIN SalesLT.Product p ON p.ProductCategoryID = c.ProductCategoryID\nGROUP BY c.ProductCategoryID, c.Name;"
+    },
+    "check": null
+  },
+  {
+    "id": 34,
+    "category": "Subqueries",
+    "difficulty": "easy",
+    "title": "Compare to an aggregate",
+    "prompt": "Return ProductID, Name and ListPrice of products priced above the average ListPrice.",
+    "hint": null,
+    "ordered": false,
+    "answer": {
+      "default": "SELECT ProductID, Name, ListPrice\nFROM SalesLT.Product\nWHERE ListPrice > (SELECT AVG(ListPrice) FROM SalesLT.Product);"
+    },
+    "check": null
+  },
+  {
+    "id": 35,
+    "category": "Subqueries",
+    "difficulty": "easy",
+    "title": "IN (subquery)",
+    "prompt": "Return ProductID and Name of products that appear in at least one order.",
+    "hint": null,
+    "ordered": false,
+    "answer": {
+      "default": "SELECT ProductID, Name\nFROM SalesLT.Product\nWHERE ProductID IN (SELECT ProductID FROM SalesLT.SalesOrderDetail);"
+    },
+    "check": null
+  },
+  {
+    "id": 36,
+    "category": "Subqueries",
+    "difficulty": "medium",
+    "title": "NOT EXISTS",
+    "prompt": "Return ProductID and Name of products that have never been ordered.",
+    "hint": "Be careful with NOT IN: it returns no rows if the subquery contains a NULL.",
+    "ordered": false,
+    "answer": {
+      "default": "SELECT p.ProductID, p.Name\nFROM SalesLT.Product p\nWHERE NOT EXISTS (SELECT 1 FROM SalesLT.SalesOrderDetail d WHERE d.ProductID = p.ProductID);"
+    },
+    "check": null
+  },
+  {
+    "id": 37,
+    "category": "Subqueries",
+    "difficulty": "hard",
+    "title": "Correlated subquery",
+    "prompt": "Return ProductCategoryID, Name and ListPrice of the most expensive product(s) in each category (a product whose price equals its category's maximum).",
+    "hint": "The inner query refers to the outer row (p.ProductCategoryID).",
+    "ordered": false,
+    "answer": {
+      "default": "SELECT p.ProductCategoryID, p.Name, p.ListPrice\nFROM SalesLT.Product p\nWHERE p.ListPrice = (\n  SELECT MAX(x.ListPrice) FROM SalesLT.Product x\n  WHERE x.ProductCategoryID = p.ProductCategoryID\n);"
+    },
+    "check": null
+  },
+  {
+    "id": 38,
+    "category": "Subqueries",
+    "difficulty": "medium",
+    "title": "Scalar subquery in SELECT",
+    "prompt": "Return SalesOrderID, TotalDue and the order's share of all orders' TotalDue as a percentage rounded to 2 decimals (TotalDue * 100 / grand total).",
+    "hint": null,
+    "ordered": false,
+    "answer": {
+      "default": "SELECT SalesOrderID, TotalDue,\n       ROUND(TotalDue * 100 / (SELECT SUM(TotalDue) FROM SalesLT.SalesOrderHeader), 2) AS PctOfTotal\nFROM SalesLT.SalesOrderHeader;"
+    },
+    "check": null
+  },
+  {
+    "id": 39,
+    "category": "Subqueries",
+    "difficulty": "medium",
+    "title": "Derived table",
+    "prompt": "Return the average number of lines per order as a decimal (one number).",
+    "hint": "On SQL Server, AVG of an integer column returns an integer. Multiply by 1.0 first. A derived table needs an alias.",
+    "ordered": false,
+    "answer": {
+      "default": "SELECT AVG(LineCount * 1.0) AS AvgLines\nFROM (\n  SELECT SalesOrderID, COUNT(*) AS LineCount\n  FROM SalesLT.SalesOrderDetail\n  GROUP BY SalesOrderID\n) t;"
+    },
+    "check": null
+  },
+  {
+    "id": 40,
+    "category": "CTEs (WITH)",
+    "difficulty": "medium",
+    "title": "Simple CTE",
+    "prompt": "Using a CTE, compute each customer's total spend (sum of TotalDue across their orders). Return CompanyName and TotalSpent for customers who spent more than 50000.",
+    "hint": null,
+    "ordered": false,
+    "answer": {
+      "default": "WITH spend AS (\n  SELECT CustomerID, SUM(TotalDue) AS TotalSpent\n  FROM SalesLT.SalesOrderHeader\n  GROUP BY CustomerID\n)\nSELECT c.CompanyName, s.TotalSpent\nFROM spend s\nJOIN SalesLT.Customer c ON c.CustomerID = s.CustomerID\nWHERE s.TotalSpent > 50000;"
+    },
+    "check": null
+  },
+  {
+    "id": 41,
+    "category": "CTEs (WITH)",
+    "difficulty": "hard",
+    "title": "Recursive CTE: category tree",
+    "prompt": "Use a recursive CTE to list every category with its Level (1 = top-level, 2 = subcategory) and its Path, e.g. 'Bikes > Road Bikes' (top-level categories have just their name). Return Name, Level, Path.",
+    "hint": "MySQL and Postgres need WITH RECURSIVE. The string column must have the same type in both halves, so CAST it.",
+    "ordered": false,
+    "answer": {
+      "sqlserver": "WITH tree AS (\n  SELECT ProductCategoryID, Name, 1 AS Level, CAST(Name AS NVARCHAR(200)) AS Path\n  FROM SalesLT.ProductCategory\n  WHERE ParentProductCategoryID IS NULL\n  UNION ALL\n  SELECT c.ProductCategoryID, c.Name, t.Level + 1, CAST(t.Path + ' > ' + c.Name AS NVARCHAR(200))\n  FROM SalesLT.ProductCategory c\n  JOIN tree t ON c.ParentProductCategoryID = t.ProductCategoryID\n)\nSELECT Name, Level, Path FROM tree;",
+      "mysql": "WITH RECURSIVE tree AS (\n  SELECT ProductCategoryID, Name, 1 AS Level, CAST(Name AS CHAR(200)) AS Path\n  FROM SalesLT.ProductCategory\n  WHERE ParentProductCategoryID IS NULL\n  UNION ALL\n  SELECT c.ProductCategoryID, c.Name, t.Level + 1, CONCAT(t.Path, ' > ', c.Name)\n  FROM SalesLT.ProductCategory c\n  JOIN tree t ON c.ParentProductCategoryID = t.ProductCategoryID\n)\nSELECT Name, Level, Path FROM tree;",
+      "postgres": "WITH RECURSIVE tree AS (\n  SELECT ProductCategoryID, Name, 1 AS Level, CAST(Name AS VARCHAR(200)) AS Path\n  FROM SalesLT.ProductCategory\n  WHERE ParentProductCategoryID IS NULL\n  UNION ALL\n  SELECT c.ProductCategoryID, c.Name, t.Level + 1, CAST(t.Path || ' > ' || c.Name AS VARCHAR(200))\n  FROM SalesLT.ProductCategory c\n  JOIN tree t ON c.ParentProductCategoryID = t.ProductCategoryID\n)\nSELECT Name, Level, Path FROM tree;"
+    },
+    "check": null
+  },
+  {
+    "id": 42,
+    "category": "CTEs (WITH)",
+    "difficulty": "hard",
+    "title": "Two CTEs",
+    "prompt": "Using CTEs, compute the revenue (sum of LineTotal) of each subcategory, then return the Name and Revenue of subcategories whose revenue is above the average subcategory revenue.",
+    "hint": null,
+    "ordered": false,
+    "answer": {
+      "default": "WITH rev AS (\n  SELECT c.Name, SUM(d.LineTotal) AS Revenue\n  FROM SalesLT.SalesOrderDetail d\n  JOIN SalesLT.Product p ON p.ProductID = d.ProductID\n  JOIN SalesLT.ProductCategory c ON c.ProductCategoryID = p.ProductCategoryID\n  GROUP BY c.Name\n),\navg_rev AS (\n  SELECT AVG(Revenue) AS AvgRevenue FROM rev\n)\nSELECT r.Name, r.Revenue\nFROM rev r, avg_rev a\nWHERE r.Revenue > a.AvgRevenue;"
+    },
+    "check": null
+  },
+  {
+    "id": 43,
+    "category": "Window functions",
+    "difficulty": "medium",
+    "title": "ROW_NUMBER per group",
+    "prompt": "Number the products within each category from most to least expensive (ties broken by ProductID). Return ProductCategoryID, Name, ListPrice, RowNum.",
+    "hint": null,
+    "ordered": false,
+    "answer": {
+      "default": "SELECT ProductCategoryID, Name, ListPrice,\n       ROW_NUMBER() OVER (PARTITION BY ProductCategoryID ORDER BY ListPrice DESC, ProductID) AS RowNum\nFROM SalesLT.Product;"
+    },
+    "check": null
+  },
+  {
+    "id": 44,
+    "category": "Window functions",
+    "difficulty": "hard",
+    "title": "Top N per group",
+    "prompt": "Return the 2 most expensive products of each category (ties broken by ProductID): ProductCategoryID, Name, ListPrice.",
+    "hint": "You can't use a window function in WHERE. Compute it in a subquery or CTE first.",
+    "ordered": false,
+    "answer": {
+      "default": "SELECT ProductCategoryID, Name, ListPrice\nFROM (\n  SELECT ProductCategoryID, Name, ListPrice,\n         ROW_NUMBER() OVER (PARTITION BY ProductCategoryID ORDER BY ListPrice DESC, ProductID) AS rn\n  FROM SalesLT.Product\n) t\nWHERE rn <= 2;"
+    },
+    "check": null
+  },
+  {
+    "id": 45,
+    "category": "Window functions",
+    "difficulty": "medium",
+    "title": "RANK",
+    "prompt": "Rank orders by TotalDue, highest = 1. Return SalesOrderID, TotalDue, SalesRank.",
+    "hint": null,
+    "ordered": false,
+    "answer": {
+      "default": "SELECT SalesOrderID, TotalDue, RANK() OVER (ORDER BY TotalDue DESC) AS SalesRank\nFROM SalesLT.SalesOrderHeader;"
+    },
+    "check": null
+  },
+  {
+    "id": 46,
+    "category": "Window functions",
+    "difficulty": "medium",
+    "title": "Running total",
+    "prompt": "For order 71780, return SalesOrderDetailID, LineTotal and a running total of LineTotal ordered by SalesOrderDetailID.",
+    "hint": null,
+    "ordered": false,
+    "answer": {
+      "default": "SELECT SalesOrderDetailID, LineTotal,\n       SUM(LineTotal) OVER (ORDER BY SalesOrderDetailID) AS RunningTotal\nFROM SalesLT.SalesOrderDetail\nWHERE SalesOrderID = 71780;"
+    },
+    "check": null
+  },
+  {
+    "id": 47,
+    "category": "Window functions",
+    "difficulty": "medium",
+    "title": "LAG",
+    "prompt": "Sorting orders by SalesOrderID, return SalesOrderID, TotalDue and the previous order's TotalDue (NULL for the first order).",
+    "hint": null,
+    "ordered": false,
+    "answer": {
+      "default": "SELECT SalesOrderID, TotalDue, LAG(TotalDue) OVER (ORDER BY SalesOrderID) AS PrevTotalDue\nFROM SalesLT.SalesOrderHeader;"
+    },
+    "check": null
+  },
+  {
+    "id": 48,
+    "category": "Window functions",
+    "difficulty": "medium",
+    "title": "Window aggregate",
+    "prompt": "Return ProductID, Name, ListPrice and the average ListPrice of the product's category (as an extra column, without collapsing the rows).",
+    "hint": null,
+    "ordered": false,
+    "answer": {
+      "default": "SELECT ProductID, Name, ListPrice,\n       AVG(ListPrice) OVER (PARTITION BY ProductCategoryID) AS CategoryAvg\nFROM SalesLT.Product;"
+    },
+    "check": null
+  },
+  {
+    "id": 49,
+    "category": "Functions & CASE",
+    "difficulty": "medium",
+    "title": "String functions",
+    "prompt": "Return each product's ProductNumber, the part of ProductNumber before the first '-' as Prefix, and the product Name in upper case.",
+    "hint": "SQL Server: LEFT + CHARINDEX. MySQL: SUBSTRING_INDEX. Postgres: SPLIT_PART.",
+    "ordered": false,
+    "answer": {
+      "sqlserver": "SELECT ProductNumber,\n       LEFT(ProductNumber, CHARINDEX('-', ProductNumber) - 1) AS Prefix,\n       UPPER(Name) AS UpperName\nFROM SalesLT.Product;",
+      "mysql": "SELECT ProductNumber,\n       SUBSTRING_INDEX(ProductNumber, '-', 1) AS Prefix,\n       UPPER(Name) AS UpperName\nFROM SalesLT.Product;",
+      "postgres": "SELECT ProductNumber,\n       SPLIT_PART(ProductNumber, '-', 1) AS Prefix,\n       UPPER(Name) AS UpperName\nFROM SalesLT.Product;"
+    },
+    "check": null
+  },
+  {
+    "id": 50,
+    "category": "Functions & CASE",
+    "difficulty": "easy",
+    "title": "String length",
+    "prompt": "Return LastName and its length (number of characters) for customers whose LastName is longer than 10 characters.",
+    "hint": "SQL Server: LEN. MySQL: CHAR_LENGTH (LENGTH counts bytes). Postgres: LENGTH.",
+    "ordered": false,
+    "answer": {
+      "sqlserver": "SELECT LastName, LEN(LastName) AS NameLength\nFROM SalesLT.Customer\nWHERE LEN(LastName) > 10;",
+      "mysql": "SELECT LastName, CHAR_LENGTH(LastName) AS NameLength\nFROM SalesLT.Customer\nWHERE CHAR_LENGTH(LastName) > 10;",
+      "postgres": "SELECT LastName, LENGTH(LastName) AS NameLength\nFROM SalesLT.Customer\nWHERE LENGTH(LastName) > 10;"
+    },
+    "check": null
+  },
+  {
+    "id": 51,
+    "category": "Functions & CASE",
+    "difficulty": "medium",
+    "title": "Date parts",
+    "prompt": "Return the year products started selling (from SellStartDate) and how many products started that year.",
+    "hint": "SQL Server and MySQL have YEAR(). Postgres uses EXTRACT(YEAR FROM ...), which also works in MySQL.",
+    "ordered": false,
+    "answer": {
+      "default": "SELECT YEAR(SellStartDate) AS StartYear, COUNT(*) AS Products\nFROM SalesLT.Product\nGROUP BY YEAR(SellStartDate);",
+      "postgres": "SELECT EXTRACT(YEAR FROM SellStartDate) AS StartYear, COUNT(*) AS Products\nFROM SalesLT.Product\nGROUP BY EXTRACT(YEAR FROM SellStartDate);"
+    },
+    "check": null
+  },
+  {
+    "id": 52,
+    "category": "Functions & CASE",
+    "difficulty": "medium",
+    "title": "Date difference",
+    "prompt": "For products that have a SellEndDate, return Name and the number of days between SellStartDate and SellEndDate as DaysOnSale.",
+    "hint": "SQL Server: DATEDIFF(day, start, end). MySQL: DATEDIFF(end, start). Postgres: subtract two dates.",
+    "ordered": false,
+    "answer": {
+      "sqlserver": "SELECT Name, DATEDIFF(day, SellStartDate, SellEndDate) AS DaysOnSale\nFROM SalesLT.Product\nWHERE SellEndDate IS NOT NULL;",
+      "mysql": "SELECT Name, DATEDIFF(SellEndDate, SellStartDate) AS DaysOnSale\nFROM SalesLT.Product\nWHERE SellEndDate IS NOT NULL;",
+      "postgres": "SELECT Name, CAST(SellEndDate AS DATE) - CAST(SellStartDate AS DATE) AS DaysOnSale\nFROM SalesLT.Product\nWHERE SellEndDate IS NOT NULL;"
+    },
+    "check": null
+  },
+  {
+    "id": 53,
+    "category": "Functions & CASE",
+    "difficulty": "easy",
+    "title": "CASE expression",
+    "prompt": "Return Name, ListPrice and a PriceBand column: 'Budget' when ListPrice < 100, 'Mid' when under 1000, otherwise 'Premium'.",
+    "hint": null,
+    "ordered": false,
+    "answer": {
+      "default": "SELECT Name, ListPrice,\n       CASE WHEN ListPrice < 100 THEN 'Budget'\n            WHEN ListPrice < 1000 THEN 'Mid'\n            ELSE 'Premium' END AS PriceBand\nFROM SalesLT.Product;"
+    },
+    "check": null
+  },
+  {
+    "id": 54,
+    "category": "Functions & CASE",
+    "difficulty": "medium",
+    "title": "Conditional aggregation",
+    "prompt": "For each non-NULL Color return Color, the number of products priced 1000 or more (PremiumCount) and the number priced below 1000 (OtherCount).",
+    "hint": null,
+    "ordered": false,
+    "answer": {
+      "default": "SELECT Color,\n       SUM(CASE WHEN ListPrice >= 1000 THEN 1 ELSE 0 END) AS PremiumCount,\n       SUM(CASE WHEN ListPrice < 1000 THEN 1 ELSE 0 END) AS OtherCount\nFROM SalesLT.Product\nWHERE Color IS NOT NULL\nGROUP BY Color;"
+    },
+    "check": null
+  },
+  {
+    "id": 55,
+    "category": "Functions & CASE",
+    "difficulty": "easy",
+    "title": "COALESCE",
+    "prompt": "Return Name and Color for every product, showing 'N/A' instead of NULL colors.",
+    "hint": "COALESCE works everywhere. SQL Server also has ISNULL, MySQL has IFNULL.",
+    "ordered": false,
+    "answer": {
+      "default": "SELECT Name, COALESCE(Color, 'N/A') AS Color\nFROM SalesLT.Product;"
+    },
+    "check": null
+  },
+  {
+    "id": 56,
+    "category": "Functions & CASE",
+    "difficulty": "hard",
+    "title": "Aggregate strings",
+    "prompt": "For each order with fewer than 10 lines, return SalesOrderID and a comma+space separated list of its product names in alphabetical order (e.g. 'A, B, C').",
+    "hint": "SQL Server: STRING_AGG ... WITHIN GROUP. MySQL: GROUP_CONCAT. Postgres: STRING_AGG(x, sep ORDER BY ...).",
+    "ordered": false,
+    "answer": {
+      "sqlserver": "SELECT d.SalesOrderID, STRING_AGG(p.Name, ', ') WITHIN GROUP (ORDER BY p.Name) AS Products\nFROM SalesLT.SalesOrderDetail d\nJOIN SalesLT.Product p ON p.ProductID = d.ProductID\nGROUP BY d.SalesOrderID\nHAVING COUNT(*) < 10;",
+      "mysql": "SELECT d.SalesOrderID, GROUP_CONCAT(p.Name ORDER BY p.Name SEPARATOR ', ') AS Products\nFROM SalesLT.SalesOrderDetail d\nJOIN SalesLT.Product p ON p.ProductID = d.ProductID\nGROUP BY d.SalesOrderID\nHAVING COUNT(*) < 10;",
+      "postgres": "SELECT d.SalesOrderID, STRING_AGG(p.Name, ', ' ORDER BY p.Name) AS Products\nFROM SalesLT.SalesOrderDetail d\nJOIN SalesLT.Product p ON p.ProductID = d.ProductID\nGROUP BY d.SalesOrderID\nHAVING COUNT(*) < 10;"
+    },
+    "check": null
+  },
+  {
+    "id": 57,
+    "category": "Set operations",
+    "difficulty": "easy",
+    "title": "UNION",
+    "prompt": "Return one column with all product category names and product model names, without duplicates.",
+    "hint": null,
+    "ordered": false,
+    "answer": {
+      "default": "SELECT Name FROM SalesLT.ProductCategory\nUNION\nSELECT Name FROM SalesLT.ProductModel;"
+    },
+    "check": null
+  },
+  {
+    "id": 58,
+    "category": "Set operations",
+    "difficulty": "easy",
+    "title": "UNION ALL",
+    "prompt": "Return the ProductID of every line in order 71780 followed by every line in order 71783, keeping duplicates.",
+    "hint": "UNION removes duplicates. UNION ALL keeps them, and is faster.",
+    "ordered": false,
+    "answer": {
+      "default": "SELECT ProductID FROM SalesLT.SalesOrderDetail WHERE SalesOrderID = 71780\nUNION ALL\nSELECT ProductID FROM SalesLT.SalesOrderDetail WHERE SalesOrderID = 71783;"
+    },
+    "check": null
+  },
+  {
+    "id": 59,
+    "category": "Set operations",
+    "difficulty": "medium",
+    "title": "INTERSECT",
+    "prompt": "Return the ProductIDs that were ordered in both order 71780 and order 71783.",
+    "hint": null,
+    "ordered": false,
+    "answer": {
+      "default": "SELECT ProductID FROM SalesLT.SalesOrderDetail WHERE SalesOrderID = 71780\nINTERSECT\nSELECT ProductID FROM SalesLT.SalesOrderDetail WHERE SalesOrderID = 71783;"
+    },
+    "check": null
+  },
+  {
+    "id": 60,
+    "category": "Set operations",
+    "difficulty": "medium",
+    "title": "EXCEPT",
+    "prompt": "Return the ProductIDs ordered in order 71783 but not in order 71780.",
+    "hint": "Oracle calls this MINUS. MySQL supports EXCEPT/INTERSECT from 8.0.31.",
+    "ordered": false,
+    "answer": {
+      "default": "SELECT ProductID FROM SalesLT.SalesOrderDetail WHERE SalesOrderID = 71783\nEXCEPT\nSELECT ProductID FROM SalesLT.SalesOrderDetail WHERE SalesOrderID = 71780;"
+    },
+    "check": null
+  },
+  {
+    "id": 61,
+    "category": "INSERT",
+    "difficulty": "easy",
+    "title": "Insert one row",
+    "prompt": "Add a product category named 'E-Bikes' under the 'Bikes' category (ProductCategoryID 1).",
+    "hint": "List the columns you're filling. The id, rowguid and ModifiedDate have defaults.",
+    "ordered": false,
+    "answer": {
+      "default": "INSERT INTO SalesLT.ProductCategory (ParentProductCategoryID, Name)\nVALUES (1, 'E-Bikes');"
+    },
+    "check": {
+      "default": "SELECT ParentProductCategoryID, Name FROM SalesLT.ProductCategory WHERE Name = 'E-Bikes';"
+    }
+  },
+  {
+    "id": 62,
+    "category": "INSERT",
+    "difficulty": "medium",
+    "title": "Insert with required columns",
+    "prompt": "Add a customer: FirstName 'Ada', LastName 'Lovelace', CompanyName 'Analytical Engines', EmailAddress 'ada@example.com'. PasswordHash and PasswordSalt are NOT NULL with no default, so set both to ''.",
+    "hint": null,
+    "ordered": false,
+    "answer": {
+      "default": "INSERT INTO SalesLT.Customer (FirstName, LastName, CompanyName, EmailAddress, PasswordHash, PasswordSalt)\nVALUES ('Ada', 'Lovelace', 'Analytical Engines', 'ada@example.com', '', '');"
+    },
+    "check": {
+      "default": "SELECT FirstName, LastName, CompanyName, EmailAddress, NameStyle FROM SalesLT.Customer WHERE LastName = 'Lovelace';"
+    }
+  },
+  {
+    "id": 63,
+    "category": "INSERT",
+    "difficulty": "medium",
+    "title": "Insert several rows",
+    "prompt": "In one statement, add three subcategories under 'Accessories' (ProductCategoryID 4): 'Bells', 'Baskets' and 'Mirrors'.",
+    "hint": null,
+    "ordered": false,
+    "answer": {
+      "default": "INSERT INTO SalesLT.ProductCategory (ParentProductCategoryID, Name)\nVALUES (4, 'Bells'), (4, 'Baskets'), (4, 'Mirrors');"
+    },
+    "check": {
+      "default": "SELECT ParentProductCategoryID, Name FROM SalesLT.ProductCategory WHERE ParentProductCategoryID = 4;"
+    }
+  },
+  {
+    "id": 64,
+    "category": "INSERT",
+    "difficulty": "medium",
+    "title": "INSERT ... SELECT",
+    "prompt": "For every top-level category (no parent), insert a subcategory under it named '<parent name> Clearance', e.g. 'Bikes Clearance'.",
+    "hint": null,
+    "ordered": false,
+    "answer": {
+      "default": "INSERT INTO SalesLT.ProductCategory (ParentProductCategoryID, Name)\nSELECT ProductCategoryID, CONCAT(Name, ' Clearance')\nFROM SalesLT.ProductCategory\nWHERE ParentProductCategoryID IS NULL;"
+    },
+    "check": {
+      "default": "SELECT ParentProductCategoryID, Name FROM SalesLT.ProductCategory WHERE Name LIKE '% Clearance';"
+    }
+  },
+  {
+    "id": 65,
+    "category": "INSERT",
+    "difficulty": "hard",
+    "title": "Insert, then use the new id",
+    "prompt": "Add an address (AddressLine1 '1 Practice Way', City 'Seattle', StateProvince 'Washington', CountryRegion 'United States', PostalCode '98101') and link it to customer 29485 in CustomerAddress with AddressType 'Shipping'. You need the AddressID that was just generated.",
+    "hint": "SQL Server: SCOPE_IDENTITY() (or OUTPUT INSERTED.AddressID). MySQL: LAST_INSERT_ID(). Postgres: RETURNING, here inside a CTE (or lastval()).",
+    "ordered": false,
+    "answer": {
+      "sqlserver": "INSERT INTO SalesLT.Address (AddressLine1, City, StateProvince, CountryRegion, PostalCode)\nVALUES ('1 Practice Way', 'Seattle', 'Washington', 'United States', '98101');\n\nINSERT INTO SalesLT.CustomerAddress (CustomerID, AddressID, AddressType)\nVALUES (29485, SCOPE_IDENTITY(), 'Shipping');",
+      "mysql": "INSERT INTO SalesLT.Address (AddressLine1, City, StateProvince, CountryRegion, PostalCode)\nVALUES ('1 Practice Way', 'Seattle', 'Washington', 'United States', '98101');\n\nINSERT INTO SalesLT.CustomerAddress (CustomerID, AddressID, AddressType)\nVALUES (29485, LAST_INSERT_ID(), 'Shipping');",
+      "postgres": "WITH new_address AS (\n  INSERT INTO SalesLT.Address (AddressLine1, City, StateProvince, CountryRegion, PostalCode)\n  VALUES ('1 Practice Way', 'Seattle', 'Washington', 'United States', '98101')\n  RETURNING AddressID\n)\nINSERT INTO SalesLT.CustomerAddress (CustomerID, AddressID, AddressType)\nSELECT 29485, AddressID, 'Shipping' FROM new_address;"
+    },
+    "check": {
+      "default": "SELECT ca.AddressType, a.AddressLine1, a.City, a.PostalCode FROM SalesLT.CustomerAddress ca JOIN SalesLT.Address a ON a.AddressID = ca.AddressID WHERE ca.CustomerID = 29485;"
+    }
+  },
+  {
+    "id": 66,
+    "category": "UPDATE",
+    "difficulty": "easy",
+    "title": "Update one row",
+    "prompt": "Change the Phone of customer 1 to '555-0100'.",
+    "hint": "Never forget the WHERE clause on an UPDATE!",
+    "ordered": false,
+    "answer": {
+      "default": "UPDATE SalesLT.Customer\nSET Phone = '555-0100'\nWHERE CustomerID = 1;"
+    },
+    "check": {
+      "default": "SELECT CustomerID, Phone FROM SalesLT.Customer WHERE CustomerID BETWEEN 1 AND 5;"
+    }
+  },
+  {
+    "id": 67,
+    "category": "UPDATE",
+    "difficulty": "easy",
+    "title": "Update with an expression",
+    "prompt": "Raise the ListPrice of every 'Red' product by 10%.",
+    "hint": null,
+    "ordered": false,
+    "answer": {
+      "default": "UPDATE SalesLT.Product\nSET ListPrice = ListPrice * 1.10\nWHERE Color = 'Red';"
+    },
+    "check": {
+      "default": "SELECT ProductID, ListPrice FROM SalesLT.Product;"
+    }
+  },
+  {
+    "id": 68,
+    "category": "UPDATE",
+    "difficulty": "medium",
+    "title": "Update several columns",
+    "prompt": "For customer 2, set EmailAddress to 'keith@example.com' and ModifiedDate to '2025-01-01' in a single UPDATE.",
+    "hint": null,
+    "ordered": false,
+    "answer": {
+      "default": "UPDATE SalesLT.Customer\nSET EmailAddress = 'keith@example.com',\n    ModifiedDate = '2025-01-01'\nWHERE CustomerID = 2;"
+    },
+    "check": {
+      "default": "SELECT CustomerID, EmailAddress, ModifiedDate FROM SalesLT.Customer WHERE CustomerID = 2;"
+    }
+  },
+  {
+    "id": 69,
+    "category": "UPDATE",
+    "difficulty": "medium",
+    "title": "Update using a subquery",
+    "prompt": "Give every product in the 'Helmets' category a 5% lower ListPrice. Find the category by its name, not by a hard-coded id.",
+    "hint": null,
+    "ordered": false,
+    "answer": {
+      "default": "UPDATE SalesLT.Product\nSET ListPrice = ListPrice * 0.95\nWHERE ProductCategoryID = (\n  SELECT ProductCategoryID FROM SalesLT.ProductCategory WHERE Name = 'Helmets'\n);"
+    },
+    "check": {
+      "default": "SELECT ProductID, ListPrice FROM SalesLT.Product;"
+    }
+  },
+  {
+    "id": 70,
+    "category": "UPDATE",
+    "difficulty": "hard",
+    "title": "Update with a JOIN",
+    "prompt": "Set Comment = 'Bike shop' on every order whose customer's CompanyName contains 'bike' (any letter case). Use a join between SalesOrderHeader and Customer.",
+    "hint": "Each database writes this differently. SQL Server: UPDATE alias ... FROM ... JOIN. MySQL: UPDATE t JOIN ... SET. Postgres: UPDATE t SET ... FROM other WHERE ...",
+    "ordered": false,
+    "answer": {
+      "sqlserver": "UPDATE h\nSET Comment = 'Bike shop'\nFROM SalesLT.SalesOrderHeader h\nJOIN SalesLT.Customer c ON c.CustomerID = h.CustomerID\nWHERE c.CompanyName LIKE '%bike%';",
+      "mysql": "UPDATE SalesLT.SalesOrderHeader h\nJOIN SalesLT.Customer c ON c.CustomerID = h.CustomerID\nSET h.Comment = 'Bike shop'\nWHERE c.CompanyName LIKE '%bike%';",
+      "postgres": "UPDATE SalesLT.SalesOrderHeader h\nSET Comment = 'Bike shop'\nFROM SalesLT.Customer c\nWHERE c.CustomerID = h.CustomerID\n  AND c.CompanyName ILIKE '%bike%';"
+    },
+    "check": {
+      "default": "SELECT SalesOrderID, Comment FROM SalesLT.SalesOrderHeader;"
+    }
+  },
+  {
+    "id": 71,
+    "category": "UPDATE",
+    "difficulty": "hard",
+    "title": "Update with CASE",
+    "prompt": "In a single UPDATE, raise ListPrice by 5% for products under 100, by 3% for products from 100 up to (not including) 1000, and leave products at 1000 or more unchanged.",
+    "hint": null,
+    "ordered": false,
+    "answer": {
+      "default": "UPDATE SalesLT.Product\nSET ListPrice = CASE\n    WHEN ListPrice < 100 THEN ListPrice * 1.05\n    WHEN ListPrice < 1000 THEN ListPrice * 1.03\n    ELSE ListPrice END;"
+    },
+    "check": {
+      "default": "SELECT ProductID, ListPrice FROM SalesLT.Product;"
+    }
+  },
+  {
+    "id": 72,
+    "category": "DELETE",
+    "difficulty": "easy",
+    "title": "Delete with WHERE",
+    "prompt": "Delete all 'Shipping' rows from CustomerAddress.",
+    "hint": null,
+    "ordered": false,
+    "answer": {
+      "default": "DELETE FROM SalesLT.CustomerAddress\nWHERE AddressType = 'Shipping';"
+    },
+    "check": {
+      "default": "SELECT AddressType, COUNT(*) FROM SalesLT.CustomerAddress GROUP BY AddressType;"
+    }
+  },
+  {
+    "id": 73,
+    "category": "DELETE",
+    "difficulty": "medium",
+    "title": "Delete using a subquery",
+    "prompt": "Delete the 'Red' products that have never been ordered.",
+    "hint": null,
+    "ordered": false,
+    "answer": {
+      "default": "DELETE FROM SalesLT.Product\nWHERE Color = 'Red'\n  AND ProductID NOT IN (SELECT ProductID FROM SalesLT.SalesOrderDetail);"
+    },
+    "check": {
+      "default": "SELECT ProductID FROM SalesLT.Product;"
+    }
+  },
+  {
+    "id": 74,
+    "category": "DELETE",
+    "difficulty": "hard",
+    "title": "Delete with a JOIN",
+    "prompt": "Delete the order lines (SalesOrderDetail) whose product is in the 'Road Frames' category. Use a join.",
+    "hint": "SQL Server and MySQL: DELETE alias FROM ... JOIN. Postgres: DELETE FROM t USING other WHERE ...",
+    "ordered": false,
+    "answer": {
+      "sqlserver": "DELETE d\nFROM SalesLT.SalesOrderDetail d\nJOIN SalesLT.Product p ON p.ProductID = d.ProductID\nJOIN SalesLT.ProductCategory c ON c.ProductCategoryID = p.ProductCategoryID\nWHERE c.Name = 'Road Frames';",
+      "mysql": "DELETE d\nFROM SalesLT.SalesOrderDetail d\nJOIN SalesLT.Product p ON p.ProductID = d.ProductID\nJOIN SalesLT.ProductCategory c ON c.ProductCategoryID = p.ProductCategoryID\nWHERE c.Name = 'Road Frames';",
+      "postgres": "DELETE FROM SalesLT.SalesOrderDetail d\nUSING SalesLT.Product p, SalesLT.ProductCategory c\nWHERE p.ProductID = d.ProductID\n  AND c.ProductCategoryID = p.ProductCategoryID\n  AND c.Name = 'Road Frames';"
+    },
+    "check": {
+      "default": "SELECT SalesOrderID, SalesOrderDetailID FROM SalesLT.SalesOrderDetail;"
+    }
+  },
+  {
+    "id": 75,
+    "category": "DELETE",
+    "difficulty": "hard",
+    "title": "Foreign keys: delete in the right order",
+    "prompt": "Delete customer 29485 (Catherine Abel) completely. Deleting only the Customer row fails because her order and her address links reference it. Delete the referencing rows first, then the customer. (SalesOrderDetail rows are removed automatically with ON DELETE CASCADE from SalesOrderHeader.)",
+    "hint": "Try DELETE FROM SalesLT.Customer WHERE CustomerID = 29485 first and read the error. Several statements separated by ; run in one go.",
+    "ordered": false,
+    "answer": {
+      "default": "DELETE FROM SalesLT.CustomerAddress WHERE CustomerID = 29485;\nDELETE FROM SalesLT.SalesOrderHeader WHERE CustomerID = 29485;\nDELETE FROM SalesLT.Customer WHERE CustomerID = 29485;"
+    },
+    "check": {
+      "default": "SELECT (SELECT COUNT(*) FROM SalesLT.Customer WHERE CustomerID = 29485) AS Customers,\n       (SELECT COUNT(*) FROM SalesLT.SalesOrderHeader WHERE CustomerID = 29485) AS Orders,\n       (SELECT COUNT(*) FROM SalesLT.SalesOrderDetail WHERE SalesOrderID = 71782) AS OrderLines,\n       (SELECT COUNT(*) FROM SalesLT.CustomerAddress WHERE CustomerID = 29485) AS AddressLinks,\n       (SELECT COUNT(*) FROM SalesLT.Customer) AS AllCustomers;"
+    }
+  }
+]

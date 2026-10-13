@@ -1,0 +1,97 @@
+# Production stack for a single VM: 3 databases + .NET API + Caddy (HTTPS).
+# Only Caddy publishes ports (80/443). The databases are reachable only on the internal network.
+# Settings come from deploy/.env (copy .env.example). Run everything through ./deploy.sh.
+
+name: sql-practice-prod
+
+x-restart: &restart
+  restart: unless-stopped
+
+services:
+  mssql:
+    <<: *restart
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: ${DB_ADMIN_PASSWORD:?set DB_ADMIN_PASSWORD in .env}
+      # Express is free for production use (Developer edition is not). It also caps its own memory.
+      MSSQL_PID: Express
+      MSSQL_MEMORY_LIMIT_MB: "1536"
+    volumes: [mssql-data:/var/opt/mssql]
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P \"$$MSSQL_SA_PASSWORD\" -Q 'SELECT 1' -b -o /dev/null"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 30s
+
+  mysql:
+    <<: *restart
+    image: mysql:8.4
+    # Small dataset: a small buffer pool and no performance_schema save about 250 MB of RAM.
+    command: ["--performance-schema=OFF", "--innodb-buffer-pool-size=64M"]
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ADMIN_PASSWORD:?}
+    volumes: [mysql-data:/var/lib/mysql]
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p\"$$MYSQL_ROOT_PASSWORD\" --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 30s
+
+  postgres:
+    <<: *restart
+    image: postgres:17
+    environment:
+      POSTGRES_PASSWORD: ${DB_ADMIN_PASSWORD:?}
+      POSTGRES_DB: adventureworks
+    volumes: [postgres-data:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d adventureworks"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+
+  api:
+    <<: *restart
+    build:
+      context: ..
+      dockerfile: api/Dockerfile
+    image: sql-practice-api:latest
+    depends_on:
+      mssql: { condition: service_healthy }
+      mysql: { condition: service_healthy }
+      postgres: { condition: service_healthy }
+    environment:
+      PracticePassword: ${PRACTICE_PASSWORD:?set PRACTICE_PASSWORD in .env}
+      RateLimit__SqlPerMinute: ${SQL_REQUESTS_PER_MINUTE:-60}
+      Cors__AllowedOrigins__0: ${WEB_ORIGIN:?set WEB_ORIGIN in .env}
+      ConnectionStrings__SqlServerAdmin: "Server=mssql,1433;Database=AdventureWorksLT;User Id=sa;Password=${DB_ADMIN_PASSWORD};TrustServerCertificate=True"
+      ConnectionStrings__SqlServerPractice: "Server=mssql,1433;Database=AdventureWorksLT;User Id=practice;Password=${PRACTICE_PASSWORD};TrustServerCertificate=True;Application Name=sql-practice"
+      ConnectionStrings__MySqlAdmin: "Server=mysql;Port=3306;User ID=root;Password=${DB_ADMIN_PASSWORD};AllowUserVariables=true"
+      ConnectionStrings__MySqlPractice: "Server=mysql;Port=3306;Database=SalesLT;User ID=practice;Password=${PRACTICE_PASSWORD}"
+      ConnectionStrings__PostgresAdmin: "Host=postgres;Port=5432;Database=adventureworks;Username=postgres;Password=${DB_ADMIN_PASSWORD}"
+      ConnectionStrings__PostgresPractice: "Host=postgres;Port=5432;Database=adventureworks;Username=practice;Password=${PRACTICE_PASSWORD}"
+
+  caddy:
+    <<: *restart
+    image: caddy:2
+    depends_on: [api]
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    environment:
+      API_DOMAIN: ${API_DOMAIN:?set API_DOMAIN in .env}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+
+volumes:
+  mssql-data:
+  mysql-data:
+  postgres-data:
+  caddy-data:
+  caddy-config:

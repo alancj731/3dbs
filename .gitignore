@@ -1,0 +1,58 @@
+# ---- Database ----
+# AdventureWorksLT backup (~8 MB); setup.sh downloads it again when missing
+db/mssql/*.bak
+
+# ---- .NET (api/) ----
+bin/
+obj/
+*.user
+*.suo
+*.userprefs
+*.rsuser
+.vs/
+TestResults/
+*.trx
+appsettings.*.local.json
+
+# ---- Node / Angular (web/, see also web/.gitignore) ----
+node_modules/
+dist/
+.angular/
+out-tsc/
+coverage/
+npm-debug.log*
+yarn-error.log*
+
+# ---- Python (tests/) ----
+__pycache__/
+*.pyc
+.venv/
+
+# ---- Local secrets / environment ----
+.env
+.env.*
+!.env.example
+
+# ---- Editors / IDEs ----
+.idea/
+*.swp
+*.swo
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# ---- OS ----
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ---- Logs ----
+*.log
+
+# ---- Local Tools ----
+localtools/
+
+# ---- Local Test Files ----
+localtest/

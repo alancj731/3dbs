@@ -1,0 +1,10 @@
+.git
+**/bin
+**/obj
+web/
+tests/
+deploy/
+db/mssql/
+*.md
+.env
+.env.*

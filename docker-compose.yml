@@ -1,0 +1,51 @@
+name: sql-practice
+
+services:
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: aw-mssql
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "AwPractice!2026"
+      MSSQL_PID: Developer
+    ports: ["127.0.0.1:1433:1433"]
+    volumes: [mssql-data:/var/opt/mssql]
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P 'AwPractice!2026' -Q 'SELECT 1' -b -o /dev/null"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 20s
+
+  mysql:
+    image: mysql:8.4
+    container_name: aw-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: "AwPractice!2026"
+    ports: ["127.0.0.1:3306:3306"]
+    volumes: [mysql-data:/var/lib/mysql]
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p'AwPractice!2026' --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 20s
+
+  postgres:
+    image: postgres:17
+    container_name: aw-postgres
+    environment:
+      POSTGRES_PASSWORD: "AwPractice!2026"
+      POSTGRES_DB: adventureworks
+    ports: ["127.0.0.1:5432:5432"]
+    volumes: [postgres-data:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d adventureworks"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+volumes:
+  mssql-data:
+  mysql-data:
+  postgres-data:

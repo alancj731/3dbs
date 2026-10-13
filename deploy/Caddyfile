@@ -1,0 +1,22 @@
+# Caddy gets and renews a Let's Encrypt certificate for API_DOMAIN automatically.
+# API_DOMAIN must point at this VM (DNS A record) and ports 80 + 443 must be open.
+{$API_DOMAIN} {
+	encode zstd gzip
+
+	# Only the API is served from here; the Angular app is on Vercel and calls it directly (CORS).
+	handle /api/* {
+		# Overwrite any X-Real-IP the client sent, so the API's per-visitor rate limit can't be dodged.
+		reverse_proxy api:8080 {
+			header_up X-Real-IP {client_ip}
+		}
+	}
+	handle {
+		respond "SQL Practice API" 200
+	}
+
+	header {
+		X-Content-Type-Options nosniff
+		Referrer-Policy no-referrer
+		-Server
+	}
+}
